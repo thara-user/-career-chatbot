@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerBot AI </title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page:    #F0EFEA;
+      --bg-card:    #FFFFFF;
+      --bg-input:   #F7F6F2;
+      --text-1:     #1A1A1A;
+      --text-2:     #5C5C5A;
+      --text-3:     #9A9A97;
+      --border:     rgba(0,0,0,0.10);
+      --border-md:  rgba(0,0,0,0.16);
+      --accent:     #1A6B3C;
+      --accent-lt:  #EAF3DE;
+      --green-bg:   #EAF3DE; --green-text: #1A6B3C; --green-bdr: #BAD98D;
+      --blue-bg:    #E6F0FB; --blue-text:  #154D96; --blue-bdr:  #A8C9F0;
+      --sand-bg:    #F2EFE7; --sand-text:  #56534A; --sand-bdr:  #D4CFC3;
+      --red-bg:     #FCE8E8; --red-text:   #A12828; --red-bdr:   #EDAAAA;
+      --r-md: 10px; --r-lg: 14px; --r-xl: 18px;
+      --shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-page);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SHELL ── */
+    .shell {
+      width: 100%; max-width: 800px;
+      height: 90vh; max-height: 900px;
+      background: var(--bg-card);
+      border-radius: var(--r-xl);
+      border: 0.5px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      display: flex; align-items: center; gap: 13px;
+      padding: 16px 24px;
+      border-bottom: 0.5px solid var(--border);
+      flex-shrink: 0;
+      background: #fff;
+    }
+    .hdr-logo {
+      width: 42px; height: 42px;
+      background: var(--accent);
+      border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: #fff; flex-shrink: 0;
+    }
+    .hdr-info h1 { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.01em; }
+    .hdr-info p  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+    .hdr-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .free-badge {
+      background: #FFF7E0; color: #92600A;
+      border: 0.5px solid #F5D87A;
+      padding: 4px 11px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--green-bg); color: var(--green-text);
+      border: 0.5px solid var(--green-bdr);
+      padding: 4px 11px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4CAF50; animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── MESSAGES ── */
+    .msgs {
+      flex: 1; overflow-y: auto;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 22px;
+    }
+    .msgs::-webkit-scrollbar { width: 4px; }
+    .msgs::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 4px; }
+
+    /* ── WELCOME ── */
+    .welcome {
+      background: linear-gradient(135deg, #F0FAF0 0%, #F7F6F2 100%);
+      border: 0.5px solid var(--green-bdr);
+      border-radius: var(--r-lg); padding: 32px 28px; text-align: center;
+    }
+    .welcome-emoji { font-size: 40px; margin-bottom: 14px; }
+    .welcome h2 { font-size: 21px; font-weight: 700; color: var(--text-1); letter-spacing: -0.02em; margin-bottom: 8px; }
+    .welcome p  { font-size: 14px; color: var(--text-2); line-height: 1.7; max-width: 520px; margin: 0 auto 24px; }
+    .free-note {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #FFF7E0; color: #92600A;
+      border: 0.5px solid #F5D87A;
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      margin-bottom: 22px;
+    }
+    .cat-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 9px; max-width: 500px; margin: 0 auto;
+    }
+    .cat-btn {
+      background: #fff; border: 0.5px solid var(--border-md);
+      border-radius: var(--r-md); padding: 12px 16px;
+      font-size: 13px; font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-2); cursor: pointer;
+      text-align: left; display: flex; align-items: center; gap: 9px;
+      transition: all 0.15s ease;
+    }
+    .cat-btn:hover {
+      background: var(--accent); color: #fff;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 14px rgba(26,107,60,0.22);
+    }
+
+    /* ── CHAT ROWS ── */
+    .row { display: flex; gap: 11px; align-items: flex-start; }
+    .row.user { flex-direction: row-reverse; }
+    .av {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .av.bot  { background: var(--accent); color: #fff; }
+    .av.user { background: #BFDBFE; color: #1E40AF; }
+    .bubble {
+      max-width: 84%; border-radius: var(--r-lg);
+      padding: 13px 17px; font-size: 13.5px; line-height: 1.7;
+      color: var(--text-1); background: var(--bg-input);
+      border: 0.5px solid var(--border);
+    }
+    .row.user .bubble {
+      background: #1A3A2A; color: #E6F5EC;
+      border-color: transparent;
+    }
+
+    /* ── THINKING ── */
+    .dots { display: flex; gap: 5px; align-items: center; padding: 2px 0; }
+    .d { width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); animation: jump 1.2s infinite; }
+    .d:nth-child(2) { animation-delay: 0.2s; }
+    .d:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes jump { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-6px);opacity:1} }
+
+    /* ── LEVEL CARDS ── */
+    .levels { display: flex; flex-direction: column; gap: 9px; }
+    .gen-lbl { font-size: 12px; color: var(--text-3); margin-bottom: 2px; font-weight: 500; }
+    .lcard { border-radius: var(--r-md); overflow: hidden; border: 0.5px solid var(--border); }
+    .lhead {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; font-size: 11.5px; font-weight: 700;
+      letter-spacing: 0.05em; user-select: none;
+    }
+    .lhead.l1 { background: var(--sand-bg); color: var(--sand-text); border-bottom: 0.5px solid var(--sand-bdr); }
+    .lhead.l2 { background: var(--blue-bg); color: var(--blue-text); border-bottom: 0.5px solid var(--blue-bdr); }
+    .lhead.l3 { background: var(--green-bg); color: var(--green-text); border-bottom: 0.5px solid var(--green-bdr); }
+    .ltag { padding: 2px 9px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .l1 .ltag { background: var(--sand-bdr); color: var(--sand-text); }
+    .l2 .ltag { background: var(--blue-bdr); color: var(--blue-text); }
+    .l3 .ltag { background: var(--green-bdr); color: var(--green-text); }
+    .cpybtn {
+      margin-left: auto; padding: 3px 11px; border-radius: 5px;
+      font-size: 10.5px; font-family: 'Inter', sans-serif; font-weight: 500;
+      cursor: pointer; border: 0.5px solid currentColor;
+      background: transparent; color: inherit; opacity: 0.75; transition: opacity 0.15s;
+    }
+    .cpybtn:hover { opacity: 1; }
+    .lbody {
+      padding: 13px 15px; font-size: 12.5px; line-height: 1.88;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-1); background: #FAFAF8;
+      white-space: pre-wrap; word-break: break-word;
+    }
+
+    /* ── ERROR ── */
+    .err {
+      background: var(--red-bg); border: 0.5px solid var(--red-bdr);
+      border-radius: var(--r-md); padding: 12px 15px;
+      font-size: 13px; color: var(--red-text); font-weight: 500;
+    }
+
+    /* ── HINTS ── */
+    .hints {
+      display: flex; gap: 7px; flex-wrap: wrap;
+      padding: 6px 24px 4px; flex-shrink: 0;
+    }
+    .hint {
+      font-size: 11.5px; font-family: 'Inter', sans-serif; font-weight: 500;
+      padding: 5px 13px; border-radius: 20px;
+      background: var(--bg-input); border: 0.5px solid var(--border-md);
+      color: var(--text-2); cursor: pointer; white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .hint:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── INPUT ROW ── */
+    .input-row {
+      display: flex; gap: 10px; align-items: flex-end;
+      padding: 12px 24px 18px;
+      border-top: 0.5px solid var(--border); flex-shrink: 0;
+    }
+    textarea#inp {
+      flex: 1; border: 0.5px solid var(--border-md);
+      border-radius: var(--r-md); padding: 12px 15px;
+      font-size: 13.5px; font-family: 'Inter', sans-serif;
+      resize: none; min-height: 48px; max-height: 110px;
+      background: var(--bg-input); color: var(--text-1);
+      line-height: 1.55; outline: none; transition: border-color 0.15s;
+    }
+    textarea#inp:focus { border-color: var(--accent); }
+    textarea#inp::placeholder { color: var(--text-3); }
+    #sbtn {
+      width: 48px; height: 48px; background: var(--accent); color: #fff;
+      border: none; border-radius: var(--r-md); font-size: 22px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: opacity 0.15s, transform 0.1s;
+    }
+    #sbtn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+    #sbtn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    .footer {
+      text-align: center; font-size: 11px; color: var(--text-3);
+      padding: 0 24px 14px; flex-shrink: 0;
+    }
+    .footer span { color: var(--green-text); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-logo">✦</div>
+    <div class="hdr-info">
+      <h1>CareerBot AI</h1>
+      <p>Generates Level 1 · 2 · 3 prompts instantly</p>
+    </div>
+    <div class="hdr-right">
+      <div class="free-badge">🆓 100% Free</div>
+      <div class="live-badge"><div class="live-dot"></div>Gemini Live</div>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="msgs" id="msgs">
+    <div class="welcome" id="welcome">
+      <div class="welcome-emoji">🎯</div>
+      <h2>CareerBot AI Chatbot</h2>
+      <p>Describe any career task — I'll generate 3 levels of structured AI prompts ready to copy and use anywhere.</p>
+      <div class="free-note">🆓 Powered by Google Gemini — Completely FREE, No credit card!</div>
+      <div class="cat-grid">
+        <button class="cat-btn" onclick="quickSend('Create a resume for a fresher software engineer with Python and React skills')">📄 Resume Creation</button>
+        <button class="cat-btn" onclick="quickSend('Write a cover letter for a data analyst role at Google')">✉️ Cover Letter</button>
+        <button class="cat-btn" onclick="quickSend('Help me prepare for a product manager interview at a startup')">🎤 Interview Prep</button>
+        <button class="cat-btn" onclick="quickSend('Job search strategy for a mid-level UX designer switching industries')">🔍 Job Search</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HINTS -->
+  <div class="hints">
+    <button class="hint" onclick="quickSend('Resume for a fresher DevOps engineer with AWS Docker Kubernetes')">DevOps Resume</button>
+    <button class="hint" onclick="quickSend('Cover letter for a senior marketing manager at a tech startup')">Marketing Cover Letter</button>
+    <button class="hint" onclick="quickSend('Prepare for a data science technical interview at Amazon')">DS Interview</button>
+    <button class="hint" onclick="quickSend('How to find remote frontend developer jobs')">Remote Job Search</button>
+    <button class="hint" onclick="quickSend('Resume for a fresher MBA graduate targeting finance roles')">MBA Resume</button>
+  </div>
+
+  <!-- INPUT -->
+  <div class="input-row">
+    <textarea id="inp"
+      placeholder="e.g. I need a resume for a fresher DevOps engineer with AWS and Docker skills..."
+      rows="1"
+      onkeydown="handleKey(event)"
+      oninput="resize(this)"></textarea>
+    <button id="sbtn" onclick="send()" title="Send (Enter)">↑</button>
+  </div>
+
+  <div class="footer">
+    Powered by <span>Google Gemini API (FREE)</span> &nbsp;·&nbsp; CareerBot AI Chatbot
+  </div>
+</div>
+
+<script>
+  const msgsEl = document.getElementById('msgs');
+  const inpEl  = document.getElementById('inp');
+  const sbtnEl = document.getElementById('sbtn');
+
+  function resize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  }
+
+  function quickSend(text) {
+    inpEl.value = text;
+    resize(inpEl);
+    send();
+  }
+
+  function scrollBot() { msgsEl.scrollTop = msgsEl.scrollHeight; }
+
+  function addRow(role, content) {
+    const wc = document.getElementById('welcome');
+    if (wc) wc.style.display = 'none';
+
+    const row = document.createElement('div');
+    row.className = 'row ' + role;
+
+    const av = document.createElement('div');
+    av.className = 'av ' + role;
+    av.textContent = role === 'bot' ? '✦' : 'U';
+
+    const bbl = document.createElement('div');
+    bbl.className = 'bubble';
+    if (typeof content === 'string') bbl.innerHTML = content;
+    else bbl.appendChild(content);
+
+    row.appendChild(av);
+    row.appendChild(bbl);
+    msgsEl.appendChild(row);
+    scrollBot();
+  }
+
+  function showThinking() {
+    const row = document.createElement('div');
+    row.className = 'row bot'; row.id = 'thinking';
+    const av = document.createElement('div');
+    av.className = 'av bot'; av.textContent = '✦';
+    const bbl = document.createElement('div');
+    bbl.className = 'bubble';
+    bbl.innerHTML = '<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
+    row.appendChild(av); row.appendChild(bbl);
+    msgsEl.appendChild(row); scrollBot();
+  }
+
+  function hideThinking() {
+    const t = document.getElementById('thinking');
+    if (t) t.remove();
+  }
+
+  function makeCard(label, tag, cls, text) {
+    const card = document.createElement('div');
+    card.className = 'lcard';
+
+    const head = document.createElement('div');
+    head.className = 'lhead ' + cls;
+    head.innerHTML = `<span>${label}</span><span class="ltag">${tag}</span>`;
+
+    const btn = document.createElement('button');
+    btn.className = 'cpybtn'; btn.textContent = 'Copy';
+    btn.onclick = () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    };
+    head.appendChild(btn);
+
+    const body = document.createElement('div');
+    body.className = 'lbody'; body.textContent = text;
+
+    card.appendChild(head);
+    card.appendChild(body);
+    return card;
+  }
+
+  function parseLevels(raw) {
+    const l1 = raw.match(/LEVEL\s*1[:\-]?\s*([\s\S]*?)(?=LEVEL\s*2|$)/i);
+    const l2 = raw.match(/LEVEL\s*2[:\-]?\s*([\s\S]*?)(?=LEVEL\s*3|$)/i);
+    const l3 = raw.match(/LEVEL\s*3[:\-]?\s*([\s\S]*?)$/i);
+    return {
+      l1: l1 ? l1[1].trim() : '',
+      l2: l2 ? l2[1].trim() : '',
+      l3: l3 ? l3[1].trim() : ''
+    };
+  }
+
+  async function send() {
+    const text = inpEl.value.trim();
+    if (!text) return;
+    inpEl.value = ''; inpEl.style.height = 'auto';
+    sbtnEl.disabled = true;
+
+    addRow('user', text);
+    showThinking();
+
+    try {
+      const res  = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Server error.');
+
+      hideThinking();
+      const p = parseLevels(data.reply);
+
+      const wrap = document.createElement('div');
+      wrap.className = 'levels';
+
+      const lbl = document.createElement('p');
+      lbl.className = 'gen-lbl';
+      lbl.textContent = '3 Prompt Levels generated — click Copy to use any:';
+      wrap.appendChild(lbl);
+
+      if (p.l1) wrap.appendChild(makeCard('LEVEL 1', 'Basic', 'l1', p.l1));
+      if (p.l2) wrap.appendChild(makeCard('LEVEL 2', 'Structured', 'l2', p.l2));
+      if (p.l3) wrap.appendChild(makeCard('LEVEL 3', 'Expert', 'l3', p.l3));
+
+      addRow('bot', wrap);
+
+    } catch (err) {
+      hideThinking();
+      const errEl = document.createElement('div');
+      errEl.className = 'err';
+      errEl.textContent = '⚠️ ' + err.message;
+      addRow('bot', errEl);
+    }
+
+    sbtnEl.disabled = false;
+    inpEl.focus();
+  }
+</script>
+</body>
+</html>
